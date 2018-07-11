@@ -17,8 +17,9 @@ class CreatePostsTable extends Migration
             $table->increments('id');
             $table->unsignedInteger('id_author');
             $table->string('name');
-            $table->text('content');
             $table->timestamps();
+
+            $table->timestamp('live_at')->nullable();
 
             $table->foreign('id_author')
                   ->references('id')

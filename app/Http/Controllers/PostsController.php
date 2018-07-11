@@ -20,7 +20,9 @@ class PostsController extends Controller
      */
     public function index()
     {
-        $posts = Post::all();
+        $posts = Post::with(['content', 'author'])
+                     ->orderBy('id', 'desc')
+                     ->paginate('5');
         return view('posts.index', compact('posts'));
     }
 
@@ -44,11 +46,17 @@ class PostsController extends Controller
     {
         $this->validatePost($request);
 
-        $post->create([
+        $live = $request->live ? now()->toDateTimeString() : null;
+
+        $post = $post->create([
             'name' => $request->name,
-            'content' => $request->content,
             'id_author' => Auth::id(),
+            'live_at' => $live,
         ]);
+
+        if ($request->has('content')) {
+            $post->syncContent($request->content);
+        }
 
         return redirect()->route('posts.index');
     }
@@ -86,10 +94,16 @@ class PostsController extends Controller
     {
         $this->validatePost($request);
 
+        $live = $request->live ? now()->toDateTimeString() : null;
+
         $post->update([
             'name' => $request->name,
-            'content' => $request->content,
+            'live_at' => $live,
         ]);
+
+        if ($request->has('content')) {
+            $post->syncContent($request->content);
+        }
 
         return redirect()->route('posts.show', $post);
     }
@@ -112,9 +126,12 @@ class PostsController extends Controller
      * @return mixed
      */
     protected function validatePost(Request $request) {
-        return  $this->validate($request, [
+        return $this->validate($request, [
                     'name' => 'required',
-                    'content' => 'required',
+                    'content' => 'array',
+                ], [
+                    'name.required' => 'The post title is required.',
+                    'content.array' => 'The content is in the wrong format (found: array).'
                 ]);
     }
 }

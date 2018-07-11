@@ -11,7 +11,11 @@
                 <div class="card-body">
 
                     <h1>{{ $post->name }}</h1>
-                    <p>{{ $post->content }}</p>
+
+                    @foreach($post->content as $content)
+                        <sub>{{ $content->name }}</sub>
+                        <p>{{ $content->content }}</p>
+                    @endforeach
 
                 </div>
             </div>

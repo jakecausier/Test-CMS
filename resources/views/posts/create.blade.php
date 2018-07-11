@@ -9,10 +9,8 @@
 
             <div class="card">
                 <div class="card-body">
-                    
-                    <h1 class="mb-4">Creating new post</h1>
 
-                    {{ $errors }}
+                    <h1 class="mb-4">Creating new post</h1>
 
                     <form method="POST" action="{{ route('posts.store') }}">
 

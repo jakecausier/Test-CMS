@@ -46,6 +46,7 @@ class UsersController extends Controller
      */
     public function show(User $user)
     {
+        $user->load(['posts.content']);
         return view('users.show', compact('user'));
     }
 
