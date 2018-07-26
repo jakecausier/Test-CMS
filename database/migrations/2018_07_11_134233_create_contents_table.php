@@ -15,16 +15,13 @@ class CreateContentsTable extends Migration
     {
         Schema::create('contents', function (Blueprint $table) {
             $table->increments('id');
-            $table->unsignedInteger('post_id');
+            $table->integer('contentable_id')->nullable();
+            $table->string('contentable_type')->nullable();
             $table->string('name')->nullable();
             $table->text('content')->nullable();
             $table->string('type')->nullable();
             $table->text('meta')->nullable();
             $table->timestamps();
-
-            $table->foreign('post_id')
-                  ->references('id')
-                  ->on('posts');
         });
     }
 

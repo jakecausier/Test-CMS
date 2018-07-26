@@ -3,16 +3,30 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
+use App\Events\ContentCreated;
 
 class Content extends Model
 {
+
+    protected $dispatchesEvents = [
+        'created' => ContentCreated::class,
+    ];
+
     /**
      * The attributes that are mass assignable.
      *
      * @var array
      */
     protected $fillable = [
-        'post_id', 'name', 'content', 'type', 'meta'
+        'post_id',
+        'contentable_id',
+        'contentable_type',
+        'name',
+        'content',
+        'type',
+        'meta',
+        'parent_id',
     ];
 
     /**
@@ -23,4 +37,47 @@ class Content extends Model
     protected $casts = [
         'meta' => 'array'
     ];
+
+    public function parent()
+    {
+        return $this->belongsTo('App\Content', 'parent_id', 'id');
+    }
+
+    public function children()
+    {
+        return $this->hasMany('App\Content', 'parent_id', 'id');
+    }
+
+    public function getImageUrlAttribute()
+    {
+        if ($this->type === 'media') {
+            return Storage::disk($this->meta['disk'])->url("{$this->content}/{$this->name}");
+        }
+        return null;
+    }
+
+    public function getImagePathAttribute()
+    {
+        if ($this->type === 'media') {
+            return Storage::disk($this->meta['disk'])->path("{$this->content}/{$this->name}");
+        }
+        return null;
+    }
+
+    public function getImageAttribute()
+    {
+        if ($this->type === 'media') {
+            return Storage::disk($this->meta['disk'])->get("{$this->content}/{$this->name}");
+        }
+        return null;
+    }
+
+    public function mimeTypeIsManipulatable()
+    {
+        $mime = $this->meta['mime'] ?? null;
+        return ($mime === 'image/jpeg' ||
+                $mime === 'image/jpg' ||
+                $mime === 'image/png' ||
+                $mime === 'image/gif' );
+    }
 }

@@ -17,8 +17,14 @@ Route::get('/', function () {
 
 Auth::routes();
 
-Route::get('/home', 'HomeController@index')->name('home');
-Route::get('/profile', 'ProfileController@show')->name('profile');
+Route::middleware('auth')->prefix('admin')->group(function () {
+    Route::get('/profile', 'ProfileController@show')->name('profile');
+    Route::get('/media', 'MediaController@index')->name('media.index');
+    Route::get('/media/create', 'MediaController@create')->name('media.create');
+    Route::post('/media/create', 'MediaController@uploadFile')->name('media.upload');
 
-Route::resource('posts', 'PostsController');
-Route::resource('users', 'UsersController');
+    Route::resource('posts', 'PostsController');
+    Route::resource('users', 'UsersController');
+});
+
+Route::get('/home', 'HomeController@index')->name('home');

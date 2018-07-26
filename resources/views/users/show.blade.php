@@ -5,7 +5,7 @@
     <div class="row justify-content-center">
         <div class="col-md-8">
 
-            <a href="/users">Back to users</a>
+            <a href="">Back to users</a>
 
             <div class="card mb-4">
                 <div class="card-body">

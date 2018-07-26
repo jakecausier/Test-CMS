@@ -4,9 +4,13 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use App\Scopes\LiveScope;
+use App\Traits\HasContentTrait;
+use App\Traits\HasMediaTrait;
 
 class Post extends Model
 {
+
+    use HasContentTrait, HasMediaTrait;
 
     protected static function boot()
     {
@@ -82,16 +86,6 @@ class Post extends Model
     public function author()
     {
         return $this->belongsTo('App\User', 'id_author');
-    }
-
-    /**
-     * Return the content of the post
-     *
-     * @return App\Content
-     */
-    public function content()
-    {
-        return $this->hasMany('App\Content');
     }
 
     /**
