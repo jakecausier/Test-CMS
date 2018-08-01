@@ -63,12 +63,12 @@ class ManipulateMedia implements ShouldQueue
     protected function manipulateMedia($content)
     {
         $folder_path = Storage::disk($content->meta['disk'])->path("{$content->content}");
-
-        $new_filename = "thumb-{$content->name}";
+        $child_type = 'thumb';
+        $new_filename = "{$child_type}-{$content->name}";
 
         $media = Image::load($content->image_path)
-               ->width(100)
-               ->height(100)
+               ->width(150)
+               ->height(150)
                ->save("{$folder_path}/{$new_filename}");
 
         $child_media = [
@@ -81,6 +81,7 @@ class ManipulateMedia implements ShouldQueue
                 'disk' => $content->meta['disk'],
                 'mime' => $content->meta['mime'],
                 'size' => '',
+                'child_type' => $child_type,
             ],
         ];
 

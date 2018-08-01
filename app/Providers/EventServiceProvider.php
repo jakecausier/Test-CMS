@@ -15,6 +15,7 @@ class EventServiceProvider extends ServiceProvider
     protected $listen = [
         'App\Events\ContentCreated' => [
             'App\Listeners\ManipulateMedia',
+            'App\Listeners\SendEmailOnContentCreation',
         ],
     ];
 

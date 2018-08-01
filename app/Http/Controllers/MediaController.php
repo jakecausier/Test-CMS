@@ -47,7 +47,10 @@ class MediaController extends Controller
 
     public function index()
     {
-        $folders = Folder::with('content')->get();
+        $folders = Folder::with(['content' => function ($query) {
+            $query->onlyParents();
+        }, 'content.children'])->get();
+
         return view('media.index', compact('folders'));
     }
 

@@ -38,6 +38,11 @@ class Content extends Model
         'meta' => 'array'
     ];
 
+    protected $appends = [
+        'image_url',
+        'child_type'
+    ];
+
     public function parent()
     {
         return $this->belongsTo('App\Content', 'parent_id', 'id');
@@ -52,6 +57,14 @@ class Content extends Model
     {
         if ($this->type === 'media') {
             return Storage::disk($this->meta['disk'])->url("{$this->content}/{$this->name}");
+        }
+        return null;
+    }
+
+    public function getChildTypeAttribute()
+    {
+        if ($this->parent_id) {
+            return $this->meta['child_type'] ?? null;
         }
         return null;
     }
@@ -79,5 +92,10 @@ class Content extends Model
                 $mime === 'image/jpg' ||
                 $mime === 'image/png' ||
                 $mime === 'image/gif' );
+    }
+
+    public function scopeOnlyParents($query)
+    {
+        return $query->whereNull('parent_id');
     }
 }

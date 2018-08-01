@@ -16,6 +16,7 @@ window.Vue = require('vue');
  */
 
 Vue.component('upload-files', require('./components/UploadFiles.vue'));
+Vue.component('media-gallery', require('./components/MediaGallery.vue'));
 
 const app = new Vue({
     el: '#app'
